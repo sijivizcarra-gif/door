@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartoon Door Animation</title>
+<style>
+@import url('https://fonts.googleapis.com/css?family=Ubuntu&display=swap');
+
+body {
+  background-color: #ffffff;
+  font-family: 'Ubuntu', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Door frame */
+#doorFrame {
+  height: 320px;
+  width: 180px;
+  border: 6px solid #eee;
+  background-color: #EFEDD6;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* Door body */
+#door {
+  height: 100%;
+  width: 100%;
+  background-color: #964B00;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: left center;
+  transition: transform 1s ease-in-out;
+  border: 3px solid #7a3c00;
+}
+
+/* Door open animation */
+#door.open {
+  transform: perspective(800px) rotateY(-100deg);
+}
+
+/* Panels */
+.panel {
+  background-color: #964B00;
+  box-shadow: inset 0 0 0 10px #7a3c00;
+  position: absolute;
+}
+
+.panel.top {
+  top: 30px;
+  left: 25px;
+  width: 130px;
+  height: 90px;
+}
+
+.panel.bottom {
+  bottom: 30px;
+  left: 25px;
+  width: 130px;
+  height: 90px;
+}
+
+/* Doorknob */
+#doorknob {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: gold;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+
+/* Text */
+h1 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* Video Scene */
+.video-scene {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.video-scene.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Responsive video (plain) */
+#videoPlayer {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+</style>
+</head>
+<body>
+
+<h1>Open the Door</h1>
+
+<div id="doorFrame">
+  <div id="door">
+    <div class="panel top"></div>
+    <div class="panel bottom"></div>
+    <div id="doorknob"></div>
+  </div>
+</div>
+
+<div class="video-scene" id="videoScene">
+  <video id="videoPlayer" controls playsinline>
+    <source src="ako.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<script>
+const doorknob = document.querySelector('#doorknob');
+const door = document.querySelector('#door');
+const videoScene = document.querySelector('#videoScene');
+const video = document.querySelector('#videoPlayer');
+
+doorknob.addEventListener('click', () => {
+  door.classList.add('open');
+  setTimeout(() => {
+    document.body.style.transition = 'opacity 0.8s ease';
+    document.body.style.opacity = '0';
+    setTimeout(() => {
+      document.body.style.background = 'black';
+      document.querySelector('#doorFrame').style.display = 'none';
+      document.querySelector('h1').style.display = 'none';
+      videoScene.classList.add('active');
+      document.body.style.opacity = '1';
+      video.muted = false;
+      video.play().catch(err => console.log("Autoplay blocked:", err));
+    }, 800);
+  }, 1000);
+});
+</script>
+
+</body>
+</html>
