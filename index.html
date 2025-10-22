@@ -137,7 +137,6 @@ h1 {
     Your browser does not support the video tag.
   </video>
 </div>
-
 <script>
 const doorknob = document.querySelector('#doorknob');
 const door = document.querySelector('#door');
@@ -146,7 +145,9 @@ const video = document.querySelector('#videoPlayer');
 const h1 = document.querySelector('h1');
 const doorFrame = document.querySelector('#doorFrame');
 
-// videos
+// 🔊 Door sound effect
+const doorSound = new Audio("door.mp3");
+
 const videos = [
   "dudut1.mp4",
   "dudut2.mp4",
@@ -158,11 +159,12 @@ const videos = [
 
 let currentVideo = 0;
 
-// When door knob is clicked
 doorknob.addEventListener('click', () => {
-  door.classList.add('open');
+  // Play sound once when door opens
+  doorSound.currentTime = 0;
+  doorSound.play();
 
-  // After door animation
+  door.classList.add('open');
   setTimeout(() => {
     document.body.style.opacity = '0';
     setTimeout(() => {
@@ -170,7 +172,6 @@ doorknob.addEventListener('click', () => {
       doorFrame.style.display = 'none';
       document.body.style.background = 'black';
 
-      // Load next video in sequence
       video.querySelector('source').src = videos[currentVideo];
       video.load();
       videoScene.classList.add('active');
@@ -180,16 +181,12 @@ doorknob.addEventListener('click', () => {
   }, 1000);
 });
 
-// When video ends → return to door scene
 video.addEventListener('ended', () => {
-  // Move to next video index (loop)
   currentVideo = (currentVideo + 1) % videos.length;
 
-  // Fade out video
   videoScene.classList.remove('active');
   document.body.style.opacity = '0';
   setTimeout(() => {
-    // Reset door page
     door.classList.remove('open');
     doorFrame.style.display = 'block';
     h1.style.display = 'block';
@@ -197,7 +194,8 @@ video.addEventListener('ended', () => {
     document.body.style.opacity = '1';
   }, 800);
 });
-</script>
+               </script>
 
 </body>
 </html>
+
