@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartoon Door Animation</title>
+<title>Cartoon Door Animation Loop</title>
 <style>
 @import url('https://fonts.googleapis.com/css?family=Ubuntu&display=swap');
 
@@ -17,6 +17,7 @@ body {
   height: 100vh;
   margin: 0;
   overflow: hidden;
+  transition: opacity 0.8s ease;
 }
 
 /* Door frame */
@@ -108,7 +109,7 @@ h1 {
   opacity: 1;
 }
 
-/* Responsive video (plain) */
+/* Responsive video */
 #videoPlayer {
   width: 100%;
   height: auto;
@@ -132,7 +133,7 @@ h1 {
 
 <div class="video-scene" id="videoScene">
   <video id="videoPlayer" controls playsinline>
-    <source src="ako.mp4" type="video/mp4">
+    <source src="" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
@@ -142,22 +143,59 @@ const doorknob = document.querySelector('#doorknob');
 const door = document.querySelector('#door');
 const videoScene = document.querySelector('#videoScene');
 const video = document.querySelector('#videoPlayer');
+const h1 = document.querySelector('h1');
+const doorFrame = document.querySelector('#doorFrame');
 
+// videos
+const videos = [
+  "dudut1.mp4",
+  "dudut2.mp4",
+  "dudut3.mp4",
+  "dudut4.mp4",
+  "dudut5.mp4",
+  "dudut6.mp4"
+];
+
+let currentVideo = 0;
+
+// When door knob is clicked
 doorknob.addEventListener('click', () => {
   door.classList.add('open');
+
+  // After door animation
   setTimeout(() => {
-    document.body.style.transition = 'opacity 0.8s ease';
     document.body.style.opacity = '0';
     setTimeout(() => {
+      h1.style.display = 'none';
+      doorFrame.style.display = 'none';
       document.body.style.background = 'black';
-      document.querySelector('#doorFrame').style.display = 'none';
-      document.querySelector('h1').style.display = 'none';
+
+      // Load next video in sequence
+      video.querySelector('source').src = videos[currentVideo];
+      video.load();
       videoScene.classList.add('active');
       document.body.style.opacity = '1';
-      video.muted = false;
       video.play().catch(err => console.log("Autoplay blocked:", err));
     }, 800);
   }, 1000);
+});
+
+// When video ends → return to door scene
+video.addEventListener('ended', () => {
+  // Move to next video index (loop)
+  currentVideo = (currentVideo + 1) % videos.length;
+
+  // Fade out video
+  videoScene.classList.remove('active');
+  document.body.style.opacity = '0';
+  setTimeout(() => {
+    // Reset door page
+    door.classList.remove('open');
+    doorFrame.style.display = 'block';
+    h1.style.display = 'block';
+    document.body.style.background = '#ffffff';
+    document.body.style.opacity = '1';
+  }, 800);
 });
 </script>
 
