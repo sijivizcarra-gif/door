@@ -138,15 +138,25 @@ h1 {
 // 🎵 Door sound
 const doorSound = new Audio("door.mp3");
 
-// 🎥 Video list
-const videos = [
+// 🎥 Explicit list of all 13 videos
+const allVideos = [
   "dudut1.mp4",
   "dudut2.mp4",
   "dudut3.mp4",
   "dudut4.mp4",
   "dudut5.mp4",
-  "dudut6.mp4"
+  "dudut6.mp4",
+  "dudut7.mp4",
+  "dudut8.mp4",
+  "dudut9.mp4",
+  "dudut10.mp4",
+  "dudut11.mp4",
+  "dudut12.mp4",
+  "dudut13.mp4"
 ];
+
+// Track unplayed videos
+let remainingVideos = [...allVideos];
 
 const doorknob = document.querySelector('#doorknob');
 const door = document.querySelector('#door');
@@ -154,6 +164,17 @@ const videoScene = document.querySelector('#videoScene');
 const video = document.querySelector('#videoPlayer');
 const h1 = document.querySelector('h1');
 const doorFrame = document.querySelector('#doorFrame');
+
+// Function to get a random non-repeating video
+function getRandomVideo() {
+  if (remainingVideos.length === 0) {
+    remainingVideos = [...allVideos]; // reset after all played
+  }
+  const randomIndex = Math.floor(Math.random() * remainingVideos.length);
+  const selected = remainingVideos[randomIndex];
+  remainingVideos.splice(randomIndex, 1); // remove from list
+  return selected;
+}
 
 doorknob.addEventListener('click', () => {
   // Play door sound
@@ -169,13 +190,13 @@ doorknob.addEventListener('click', () => {
       doorFrame.style.display = 'none';
       document.body.style.background = 'black';
 
-      // Random video selection
-      const randomIndex = Math.floor(Math.random() * videos.length);
-      video.src = videos[randomIndex];
+      // Random non-repeat video
+      const videoFile = getRandomVideo();
+      video.src = videoFile;
       videoScene.classList.add('active');
       document.body.style.opacity = '1';
 
-      // Hide controls and autoplay
+      // Autoplay, hide controls
       video.autoplay = true;
       video.controls = false;
       video.muted = false;
