@@ -112,10 +112,9 @@ h1 {
 /* Responsive video */
 #videoPlayer {
   width: 100%;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
+  height: 100%;
   object-fit: contain;
+  background: black;
 }
 </style>
 </head>
@@ -132,13 +131,23 @@ h1 {
 </div>
 
 <div class="video-scene" id="videoScene">
-  <video id="videoPlayer" controls playsinline>
-    <source src="" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <video id="videoPlayer" playsinline></video>
 </div>
 
 <script>
+// 🎵 Door sound
+const doorSound = new Audio("door/door.mp3");
+
+// 🎥 Video list
+const videos = [
+  "door/dudut1.mp4",
+  "door/dudut2.mp4",
+  "door/dudut3.mp4",
+  "door/dudut4.mp4",
+  "door/dudut5.mp4",
+  "door/dudut6.mp4"
+];
+
 const doorknob = document.querySelector('#doorknob');
 const door = document.querySelector('#door');
 const videoScene = document.querySelector('#videoScene');
@@ -146,25 +155,12 @@ const video = document.querySelector('#videoPlayer');
 const h1 = document.querySelector('h1');
 const doorFrame = document.querySelector('#doorFrame');
 
-// 🔊 Door sound effect
-const doorSound = new Audio("door.mp3");
-
-const videos = [
-  "dudut1.mp4",
-  "dudut2.mp4",
-  "dudut3.mp4",
-  "dudut4.mp4",
-  "dudut5.mp4",
-  "dudut6.mp4"
-];
-
-let currentVideo = 0;
-
 doorknob.addEventListener('click', () => {
-  // Play sound once when door opens
+  // Play door sound
   doorSound.currentTime = 0;
   doorSound.play();
 
+  // Door opening animation
   door.classList.add('open');
   setTimeout(() => {
     document.body.style.opacity = '0';
@@ -173,18 +169,24 @@ doorknob.addEventListener('click', () => {
       doorFrame.style.display = 'none';
       document.body.style.background = 'black';
 
-      video.querySelector('source').src = videos[currentVideo];
-      video.load();
+      // Random video selection
+      const randomIndex = Math.floor(Math.random() * videos.length);
+      video.src = videos[randomIndex];
       videoScene.classList.add('active');
       document.body.style.opacity = '1';
+
+      // Hide controls and autoplay
+      video.autoplay = true;
+      video.controls = false;
+      video.muted = false;
+
       video.play().catch(err => console.log("Autoplay blocked:", err));
     }, 800);
   }, 1000);
 });
 
+// When video ends → back to door
 video.addEventListener('ended', () => {
-  currentVideo = (currentVideo + 1) % videos.length;
-
   videoScene.classList.remove('active');
   document.body.style.opacity = '0';
   setTimeout(() => {
@@ -199,5 +201,3 @@ video.addEventListener('ended', () => {
 
 </body>
 </html>
-
-
