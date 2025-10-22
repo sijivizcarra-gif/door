@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartoon Door Animation Loop</title>
+<title>Cartoon Door - Random Video</title>
 <style>
 @import url('https://fonts.googleapis.com/css?family=Ubuntu&display=swap');
 
@@ -137,6 +137,7 @@ h1 {
     Your browser does not support the video tag.
   </video>
 </div>
+
 <script>
 const doorknob = document.querySelector('#doorknob');
 const door = document.querySelector('#door');
@@ -148,6 +149,7 @@ const doorFrame = document.querySelector('#doorFrame');
 // 🔊 Door sound effect
 const doorSound = new Audio("door.mp3");
 
+// 🎥 List of all possible videos
 const videos = [
   "dudut1.mp4",
   "dudut2.mp4",
@@ -157,14 +159,16 @@ const videos = [
   "dudut6.mp4"
 ];
 
-let currentVideo = 0;
+// Store the last played video index to avoid repeats
+let lastVideo = -1;
 
 doorknob.addEventListener('click', () => {
-  // Play sound once when door opens
+  // Play sound once when opening
   doorSound.currentTime = 0;
   doorSound.play();
 
   door.classList.add('open');
+
   setTimeout(() => {
     document.body.style.opacity = '0';
     setTimeout(() => {
@@ -172,7 +176,15 @@ doorknob.addEventListener('click', () => {
       doorFrame.style.display = 'none';
       document.body.style.background = 'black';
 
-      video.querySelector('source').src = videos[currentVideo];
+      // ✅ Pick a random video (different from last one)
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * videos.length);
+      } while (randomIndex === lastVideo && videos.length > 1);
+      lastVideo = randomIndex;
+
+      // Load and play
+      video.querySelector('source').src = videos[randomIndex];
       video.load();
       videoScene.classList.add('active');
       document.body.style.opacity = '1';
@@ -181,9 +193,8 @@ doorknob.addEventListener('click', () => {
   }, 1000);
 });
 
+// After video ends → return to door scene
 video.addEventListener('ended', () => {
-  currentVideo = (currentVideo + 1) % videos.length;
-
   videoScene.classList.remove('active');
   document.body.style.opacity = '0';
   setTimeout(() => {
@@ -194,8 +205,7 @@ video.addEventListener('ended', () => {
     document.body.style.opacity = '1';
   }, 800);
 });
-               </script>
+</script>
 
 </body>
 </html>
-
