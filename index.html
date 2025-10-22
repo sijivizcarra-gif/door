@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartoon Door - Random Video</title>
+<title>Cartoon Door Animation Loop</title>
 <style>
 @import url('https://fonts.googleapis.com/css?family=Ubuntu&display=swap');
 
@@ -149,7 +149,6 @@ const doorFrame = document.querySelector('#doorFrame');
 // 🔊 Door sound effect
 const doorSound = new Audio("door.mp3");
 
-// 🎥 List of all possible videos
 const videos = [
   "dudut1.mp4",
   "dudut2.mp4",
@@ -159,16 +158,14 @@ const videos = [
   "dudut6.mp4"
 ];
 
-// Store the last played video index to avoid repeats
-let lastVideo = -1;
+let currentVideo = 0;
 
 doorknob.addEventListener('click', () => {
-  // Play sound once when opening
+  // Play sound once when door opens
   doorSound.currentTime = 0;
   doorSound.play();
 
   door.classList.add('open');
-
   setTimeout(() => {
     document.body.style.opacity = '0';
     setTimeout(() => {
@@ -176,15 +173,7 @@ doorknob.addEventListener('click', () => {
       doorFrame.style.display = 'none';
       document.body.style.background = 'black';
 
-      // ✅ Pick a random video (different from last one)
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * videos.length);
-      } while (randomIndex === lastVideo && videos.length > 1);
-      lastVideo = randomIndex;
-
-      // Load and play
-      video.querySelector('source').src = videos[randomIndex];
+      video.querySelector('source').src = videos[currentVideo];
       video.load();
       videoScene.classList.add('active');
       document.body.style.opacity = '1';
@@ -193,8 +182,9 @@ doorknob.addEventListener('click', () => {
   }, 1000);
 });
 
-// After video ends → return to door scene
 video.addEventListener('ended', () => {
+  currentVideo = (currentVideo + 1) % videos.length;
+
   videoScene.classList.remove('active');
   document.body.style.opacity = '0';
   setTimeout(() => {
